@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="test.js" defer></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        body {padding: 100px;}
+
+        .title-button-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .add-del-btn {
+            text-align: right;
+        }
+        .title-button-group {
+            padding: 12px;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <header>
+
+    </header>
+    <section>
+        <div class="query-input">
+            <h1>논문 수집 쿼리 생성기</h1>
+            <div class="add-del-btn">
+                <button class="add" onclick=addQueryBox();>추가</button>
+                <button class="delete" onclick=delQueryBox();>삭제</button>
+            </div>
+            <div class="keyword-query-set">  <!-- 키워드&쿼리 컨테이너 기준 -->
+                <div class="title-button-group">
+                    <p class="title">키워드</p>
+                    <div>
+                        <div>
+                            <input type="text" class="typing-box" placeholder="키워드1; 키워드2; 키워드3">
+                            <input type="text" class="confirm-box" placeholder="쿼리 생성">
+                        </div>
+                        <span>X</span>
+                    </div>
+                    
+
+                </div> 
+            </div>
+        </div>
+    </section>
+</body>
+</html>
