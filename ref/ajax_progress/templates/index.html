@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            $('#Progress_Loading').hide();
+        })
+        .ajaxStart(function() {
+            $('#Progress_Loading').show();
+        })
+        .ajaxStop(function() {
+            $('#Progress_Loading').hide();
+        })
+
+        
+        let count = 0;
+        
+        function save() {
+            $.ajax({
+                url: '/',
+                contentType: 'application/json',
+                method: 'POST',
+                dataType: 'html', // 수신받는 데이터 형태
+                contentType: 'application/json; charset=utf-8', // 송신하는 데이터 형태
+                data: JSON.stringify({
+                    usernum: $('#usernum').val(),
+                    username: $('#username').val(),
+                    userage: $('#userage').val()
+                }),
+                success: function(res) {
+                    count++;
+                    // document.querySelector('.output').innerHTML = res[0].이름
+                    $('.output').html(res)
+                    document.querySelector('.count').innerHTML = count    
+                } 
+            });
+            // .done(function(res) {
+            //     count++;
+            //     // document.querySelector('.output').innerHTML = res[0].이름
+            //     $('.output').html(res)
+            //     document.querySelector('.count').innerHTML = count
+            // });
+        }
+    </script>
+    <style>
+        #Progress_Loading {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            background: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div>
+            <label for="usernum">번호</label>
+            <input type="text" id='usernum'>
+        </div>
+        <div>
+            <label for="username">이름</label>
+            <input type="text" id='username'>
+        </div>
+        <div>
+            <label for="userage">나이</label>
+            <input type="text" id='userage'>
+        </div>
+        <button onclick="save();">등록</button>
+    </div>
+    <div>
+        <p class='output'></p>
+        <p class='count'></p>
+    </div>
+    <div id="Progress_Loading">
+        <img src="{{ url_for('static', filename='img/progress_loading.gif') }}"}>
+    </div>
+    
+</body>
+</html>
