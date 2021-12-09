@@ -9,7 +9,7 @@ app = Flask(__name__)
 def index():
     if request.method == 'POST':
         print('POST 요청 수신')
-        db = pd.read_excel('D:/TEMP/ajax/db.xlsx')
+        db = pd.read_excel('/Users/doitgrow/Desktop/DA_Web/ref/ajax_progress/db.xlsx')
         db_jsons = db.to_dict('records')        
         # return json.dumps(db_jsons, ensure_ascii=False)
         time.sleep(5)
