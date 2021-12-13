@@ -23,10 +23,10 @@
         function save() {
             $.ajax({
                 url: '/',
-                contentType: 'application/json',
-                method: 'POST',
-                dataType: 'html', // 수신받는 데이터 형태
                 contentType: 'application/json; charset=utf-8', // 송신하는 데이터 형태
+                type: 'POST',
+                // ajax= false,
+                dataType: 'json', // 수신받는 데이터 형태
                 data: JSON.stringify({
                     usernum: $('#usernum').val(),
                     username: $('#username').val(),
@@ -35,8 +35,10 @@
                 success: function(res) {
                     count++;
                     // document.querySelector('.output').innerHTML = res[0].이름
-                    $('.output').html(res)
-                    document.querySelector('.count').innerHTML = count    
+                    // $('.output').innerHTML(res)
+                    // resText = JSON.parse(res);
+                    document.querySelector('.output').innerHTML = res['username'];
+                    document.querySelector('.count').innerHTML = count;    
                 } 
             });
             // .done(function(res) {
