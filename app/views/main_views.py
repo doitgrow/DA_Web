@@ -6,10 +6,12 @@ from app import db
 
 bp = Blueprint("main", __name__, "/")
 
+
 @bp.route('/')
 def index():
     data = Keyword_dict.query.all()
     return render_template('main.html', data=data)
+
 
 @bp.route('/save', methods=['POST'])
 def save():
@@ -33,6 +35,7 @@ def save():
 
         return jsonify(), 201
 
+
 @bp.route('/delete', methods=['DELETE'])
 def delete():
     data = request.get_json()
@@ -42,6 +45,7 @@ def delete():
     db.session.commit()
     return jsonify(), 200
     
+
 @bp.route('/update', methods=['POST'])
 def update():
     data = request.get_json()
@@ -54,3 +58,22 @@ def update():
     db.session.commit()
     # 여기서 로그를 기록해야함 (어떤 키워드 값이 어떻게 달라졌는지 검사 필요)
     return jsonify(), 201
+
+
+@bp.route('/search', methods=['POST'])
+def search():
+    data = request.get_json()
+    kwd = data['query']
+    kwd = "%{}%".format(kwd)
+    results = Keyword_dict.query.filter(Keyword_dict.keywords.ilike(kwd)|
+                                        Keyword_dict.tech_lv1.ilike(kwd)|
+                                        Keyword_dict.tech_lv2.ilike(kwd)|
+                                        Keyword_dict.tech_lv3.ilike(kwd)
+                                        ).distinct()
+    html_table = ""
+    html_modal = ""
+    for result in results:
+        html_table += result.html_table
+        html_modal += result.html_modal
+
+    return {'table':html_table, 'modal':html_modal}

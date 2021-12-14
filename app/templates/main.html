@@ -28,8 +28,8 @@
             <div class="col-0.5">
                 <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#NewKeywords">키워드 추가</button>
             </div>
-         </div>
-        <table class="table table-hover">
+        </div>
+        <table class="table table-hover align-middle">
             <thead>
                 <tr class="text-center">
                     <td class="col-1">기술분류1</td>
@@ -39,7 +39,7 @@
                     <td class="col-2">수정일</td>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="search-result">
                 {% if data %}
                     {% for d in data %}
                     <tr class="text-center" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ d.id }}">
@@ -56,29 +56,29 @@
 
         <!-- Adding keyword modal -->
         <div class="modal fade" id="NewKeywords" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">새로운 키워드 저장</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="input-group mb-3 input-group-sm">
+                        <div class="input-group mb-3 input-group-md">
                             <span class="input-group-text">기술분류1</span>
                             <input type="text" class="form-control" id="tech_lv1">
                         </div>
-                        <div class="input-group mb-3 input-group-sm">
+                        <div class="input-group mb-3 input-group-md">
                             <span class="input-group-text">기술분류2</span>
                             <input type="text" class="form-control" id="tech_lv2">
                         </div>
-                        <div class="input-group mb-3 input-group-sm">
+                        <div class="input-group mb-3 input-group-md">
                             <span class="input-group-text">기술분류3</span>
                             <input type="text" class="form-control" id="tech_lv3">
                         </div>
-                        <textarea name="keywords" id="tech_kwds" cols="60" rows="5" placeholder="세미콜론(;)으로 키워드 구분"></textarea>
+                        <textarea name="keywords" id="tech_kwds" cols="100" rows="5" placeholder="세미콜론(;)으로 키워드 구분"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">닫기</button>
                         <button type="button" class="btn btn-primary" onclick="saveKwd();">저장</button>
                     </div>
                 </div>
@@ -86,17 +86,21 @@
         </div>
 
         <!-- Modal -->
-        {% if data %}
+        <div class="modal-wrap">
+            {% if data %}
             {% for d in data %}
             <div class="modal fade" id="staticBackdrop{{ d.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">{{ d.tech_lv1 }} / {{ d.tech_lv2 }} / {{ d.tech_lv3 }}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="btn-close x-btn" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <textarea name="keywords" id="revised_kwds" cols="60" rows="5">{{ d.keywords }}</textarea> 
+                            <textarea name="keywords" id="revised_kwds" cols="100" rows="5">{{ d.keywords }}</textarea>
+                            <div>
+                                쿼리 생성창
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button id="delBtn" type="button" class="btn btn-danger" onclick="deleteKwd({{ d.id }})">삭제</button>
@@ -106,7 +110,8 @@
                 </div>
             </div>
             {% endfor %}
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
     <script>
         function saveKwd() {
@@ -115,6 +120,7 @@
                 contentType: 'application/json; charset=utf-8',
                 type: 'POST',
                 dataType: 'json',
+                async: false,
                 data: JSON.stringify({
                     tech_lv1:$('#tech_lv1').val(),
                     tech_lv2:$('#tech_lv2').val(),
@@ -123,7 +129,12 @@
                 }),
                 success: function(res) {
                     alert("데이터 저장 완료");
-                    window.location = '/';
+                    $('#tech_lv1').val("");
+                    $('#tech_lv2').val("");
+                    $('#tech_lv3').val("");
+                    $('#tech_kwds').val("");
+                    document.querySelector('.close').click();
+                    ajax_search();
                 }
             });
         }
@@ -134,13 +145,14 @@
                 contentType: 'application/json; charset=utf-8',
                 type: 'POST',
                 dataType: 'json',
+                async: false,
                 data: JSON.stringify({
                     id:id,
                     tech_kwds:$('#revised_kwds').val(),
                 }),
-                success: function(res) {
-                    alert("데이터 수정 완료");
-                    window.location = '/';
+                success: function(res1, res2) {
+                    document.querySelector('.x-btn').click();
+                    ajax_search();
                 }
             });
         }
@@ -154,14 +166,46 @@
                     contentType: 'application/json; charset=utf-8',
                     type: 'DELETE',
                     dataType: 'json',
+                    async: false,
                     data: JSON.stringify({
                         id:id
-                    })
-                }).done(function() { 
-                    window.location = '/';
+                    }),
+                    success: function(res) {
+                        document.querySelector('.x-btn').click();
+                        ajax_search();
+                    }
                 });
             }
         }
+
+       const serach = document.getElementById("search") 
+       search.addEventListener('keyup', function() {
+            ajax_search();
+       });
+       search.addEventListener('change', function() {
+            ajax_search();
+       });
+
+       function ajax_search() {
+            $.ajax({
+                url: '/search',
+                contentType: 'application/json; charset=utf-8',
+                type: 'POST',
+                dataType: 'json',
+                data: JSON.stringify({
+                   query: $('#search').val() 
+                }),
+                success: function(json) {
+                    let sr = document.querySelector('.search-result');
+                    sr.innerHTML = "";
+                    sr.innerHTML = json.table;
+                    let mw = document.querySelector('.modal-wrap');
+                    mw.innerHTML = "";
+                    mw.innerHTML = json.modal;
+                }
+            });
+       }
+
     </script>
 </body>
 </html>
